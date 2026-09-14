@@ -99,6 +99,21 @@ export default function ModuleDetail() {
     );
   }, [folderSearch, indexedFolders]);
 
+  const indexedSearchResults = useMemo(() => {
+    const term = folderSearch.trim().toLowerCase();
+    if (!term) return [];
+    const results: Array<{ file: any; path: string[] }> = [];
+    const walk = (nodes: any[], path: string[]) => {
+      nodes.forEach((node) => {
+        const nextPath = [...path, node.name];
+        if (node.children?.length) walk(node.children, nextPath);
+        else if (`${node.name} ${path.join(" ")}`.toLowerCase().includes(term)) results.push({ file: node, path });
+      });
+    };
+    walk(indexedFolders as unknown as any[], []);
+    return results;
+  }, [folderSearch, indexedFolders]);
+
   const selectedFolder = indexedFolders.find((folder) => folder.id === folderId);
 
   const handleOpenDrive = () => {
@@ -305,7 +320,23 @@ export default function ModuleDetail() {
               )}
             </div>
 
-            {!selectedFolder ? (
+            {folderSearch.trim() ? (
+              <div className="px-5 sm:px-6 pb-6">
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <div><h2 className="text-base font-bold text-white">Resultados para “{folderSearch}”</h2><p className="text-xs text-slate-500 mt-1">{indexedSearchResults.length} archivos encontrados dentro de este módulo</p></div>
+                  <Button variant="ghost" size="sm" onClick={() => setFolderSearch("")} className="text-cyan-300 hover:text-white">Limpiar</Button>
+                </div>
+                <div className="rounded-xl border border-white/10 overflow-hidden bg-[#050b12]/70">
+                  {indexedSearchResults.map(({ file, path }, index) => (
+                    <a key={file.id} href={file.webViewLink} target="_blank" rel="noreferrer" className={`flex items-center justify-between gap-3 px-4 py-3 hover:bg-cyan-500/10 transition-colors ${index ? "border-t border-white/10" : ""}`}>
+                      <span className="flex items-center gap-3 min-w-0"><FileBox className="h-4 w-4 text-cyan-400 shrink-0" /><span className="min-w-0"><span className="block text-sm font-semibold text-slate-100 truncate">{file.name}</span><span className="block text-[11px] text-slate-500 mt-1 truncate">{path.join(" / ")}</span></span></span>
+                      <ArrowUpRight className="h-4 w-4 text-slate-500 shrink-0" />
+                    </a>
+                  ))}
+                  {indexedSearchResults.length === 0 && <div className="py-10 text-center text-sm text-slate-500">No se encontraron archivos con ese nombre.</div>}
+                </div>
+              </div>
+            ) : !selectedFolder ? (
               <div className="px-5 sm:px-6 pb-6">
                 <div className="rounded-xl border border-white/10 overflow-hidden bg-[#050b12]/70">
                   {visibleFolders.map((folder, index) => (
