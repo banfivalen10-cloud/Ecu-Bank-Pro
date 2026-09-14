@@ -26,6 +26,7 @@ import {
   Monitor,
   Smartphone,
   Menu,
+  Cpu,
 } from "lucide-react";
 
 export function Navbar() {
@@ -59,16 +60,16 @@ export function Navbar() {
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#050811]/85 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 min-h-16 py-2 flex items-center justify-between gap-2">
         <div className="flex items-center gap-3 sm:gap-6 min-w-0">
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group shrink-0">
             <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-extrabold text-slate-950 shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
-              TB
+              <Cpu className="h-5 w-5" strokeWidth={2.4} />
             </div>
             <div>
-              <span className="font-extrabold tracking-tight text-xl text-white">
-                Tune<span className="text-cyan-400">Bank</span>
+              <span className="font-extrabold tracking-tight text-sm sm:text-xl text-white whitespace-nowrap">
+                Ecu<span className="text-cyan-400"> Bank Pro</span>
               </span>
               <span className="hidden sm:inline-block ml-2 text-[10px] uppercase tracking-wider text-slate-400 font-semibold px-2 py-0.5 rounded bg-white/5 border border-white/10">
-                PRO PLATFORM
+                ECU PLATFORM
               </span>
             </div>
           </Link>

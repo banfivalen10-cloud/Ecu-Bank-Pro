@@ -65,7 +65,7 @@ export default function Home() {
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-4">
-            Tune<span className="text-cyan-400">Bank</span>
+            Ecu<span className="text-cyan-400"> Bank Pro</span>
           </h1>
 
           <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-300 font-normal leading-relaxed mb-8">
@@ -281,7 +281,7 @@ export default function Home() {
       <footer className="border-t border-white/10 bg-slate-950/80 py-8 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <div>
-            © 2026 TuneBank Pro Platform. Todos los derechos reservados.
+            © 2026 Ecu Bank Pro. Todos los derechos reservados.
           </div>
           <div className="flex items-center gap-6">
             <Link href="/" className="hover:text-slate-300 transition-colors">Inicio</Link>

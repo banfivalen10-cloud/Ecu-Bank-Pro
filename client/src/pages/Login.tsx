@@ -14,6 +14,7 @@ import {
   ArrowRight,
   Sparkles,
   CheckCircle2,
+  Cpu,
 } from "lucide-react";
 
 export default function Login() {
@@ -64,9 +65,9 @@ export default function Login() {
           <div className="p-8 rounded-3xl bg-slate-900/90 border border-white/10 shadow-2xl relative overflow-hidden">
             <div className="text-center mb-8">
               <div className="h-12 w-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center mx-auto mb-4 font-extrabold text-xl">
-                TB
+                <Cpu className="h-7 w-7" strokeWidth={2.2} />
               </div>
-              <h1 className="text-2xl font-bold text-white">Inicio de Sesión TuneBank</h1>
+              <h1 className="text-2xl font-bold text-white">Inicio de Sesión Ecu Bank Pro</h1>
               <p className="text-xs text-slate-400 mt-1">
                 Acceso exclusivo enlazado con tu compra para desbloquear archivos y Google Drive.
               </p>
