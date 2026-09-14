@@ -6,6 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Database,
   GraduationCap,
   Cpu,
@@ -16,8 +24,11 @@ import {
   ArrowRight,
   ExternalLink,
   CheckCircle2,
-  FolderSync,
   HelpCircle,
+  FileQuestion,
+  Download,
+  MessageCircle,
+  ChevronDown,
 } from "lucide-react";
 
 const ICON_MAP: Record<string, any> = {
@@ -41,6 +52,7 @@ const FALLBACK_MODULES = [
 export default function Home() {
   const [, setLocation] = useLocation();
   const [search, setSearch] = useState("");
+  const [openHelp, setOpenHelp] = useState<string | null>(null);
   const { data: modules, isLoading } = trpc.library.modules.useQuery();
   const visibleModules = modules?.length ? modules : FALLBACK_MODULES;
 
@@ -215,34 +227,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Google Drive Connection Notice */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 w-full">
-        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-cyan-950/40 via-blue-950/20 to-slate-900/60 border border-cyan-500/20 relative overflow-hidden">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="space-y-2 max-w-2xl">
-              <div className="inline-flex items-center gap-2 text-xs font-semibold text-cyan-400 uppercase tracking-wider">
-                <FolderSync className="h-4 w-4 text-cyan-400" />
-                Arquitectura lista para Google Drive
-              </div>
-              <h3 className="text-xl font-bold text-white">
-                ¿Tienes la carpeta de Google Drive lista para conectar?
-              </h3>
-              <p className="text-sm text-slate-300 leading-relaxed">
-                Este sitio ya cuenta con el buscador indexado, base de datos relacional y estructura por módulos. Tan pronto descargues o compartas la carpeta de Google Drive, vincularemos los IDs de carpetas y enlaces de descarga directa sin cambiar el diseño.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3">
-              <Link href="/drive-explorer">
-                <Button className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-5">
-                  Probar Buscador Drive
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="border-t border-white/10 bg-slate-950/80 py-8 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
@@ -256,6 +240,36 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      <Dialog open={openHelp !== null} onOpenChange={(open) => !open && setOpenHelp(null)}>
+        <DialogTrigger asChild>
+          <button type="button" aria-label="Abrir ayuda" onClick={() => setOpenHelp("inicio")} className="fixed bottom-5 right-5 z-40 h-14 w-14 rounded-full bg-cyan-500 text-slate-950 shadow-xl shadow-cyan-500/25 hover:bg-cyan-400 hover:scale-105 transition-all flex items-center justify-center">
+            <HelpCircle className="h-7 w-7" />
+          </button>
+        </DialogTrigger>
+        <DialogContent className="max-h-[85vh] overflow-y-auto bg-[#07101a] border-cyan-500/25 text-slate-100 sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl text-white"><HelpCircle className="h-5 w-5 text-cyan-400" /> Centro de ayuda</DialogTitle>
+            <DialogDescription className="text-slate-400">Respuestas rápidas para encontrar archivos y resolver problemas de descarga.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2 mt-2">
+            {[
+              ["No encuentro un archivo", "Escribí el nombre, marca, modelo o extensión en el buscador. Probá también con una parte del nombre, por ejemplo WinOLS, BMW, ECM o .rar. Si no aparece, revisá el módulo correspondiente y avisá para incorporarlo al índice."],
+              ["El botón no descarga", "Algunos archivos se abren en Google Drive o MEGA en una pestaña nueva. Permití ventanas emergentes y esperá a que cargue la página. En Chrome, revisá si la descarga fue bloqueada arriba a la derecha."],
+              ["¿Dónde está cada contenido?", "El Módulo 1 contiene archivos ECU, Stage, DAMOS y Mappacks. El Módulo 2 es el curso WinOLS. Los Módulos 3 y 4 contienen WinOLS y ECM Titanium. El Módulo 5 reúne software, activadores y videoclases. El Módulo 6 contiene herramientas Key Code, Immo y Airbag."],
+              ["El archivo aparece pero no abre", "Abrí el resultado desde el enlace Drive y comprobá que tu cuenta tenga permiso. Para archivos RAR o ZIP necesitás un descompresor como 7-Zip. Para videos, esperá a que termine de cargar YouTube o Drive."],
+              ["¿Cómo pido un archivo faltante?", "Anotá el nombre exacto, módulo, marca/modelo y extensión que necesitás. Luego comunicate con el administrador indicando esos datos para que pueda revisar la carpeta original y actualizar el índice."],
+              ["La página se ve vacía o vieja", "Actualizá con Ctrl + F5 en PC o cerrá y abrí nuevamente el navegador en el celular. También podés probar una ventana privada para evitar la caché."],
+            ].map(([question, answer]) => (
+              <button key={question} type="button" onClick={() => setOpenHelp(openHelp === question ? null : question)} className="w-full text-left rounded-xl border border-white/10 bg-white/[0.03] hover:bg-cyan-500/[0.06] p-4 transition-colors">
+                <span className="flex items-center justify-between gap-3"><span className="flex items-center gap-2 font-semibold text-slate-100"><FileQuestion className="h-4 w-4 text-cyan-400 shrink-0" />{question}</span><ChevronDown className={`h-4 w-4 text-slate-500 transition-transform ${openHelp === question ? "rotate-180" : ""}`} /></span>
+                {openHelp === question && <span className="block text-sm leading-relaxed text-slate-400 mt-3 pl-6">{answer}</span>}
+              </button>
+            ))}
+          </div>
+          <div className="mt-2 rounded-xl border border-emerald-400/20 bg-emerald-500/5 p-4 text-sm text-slate-300"><MessageCircle className="inline h-4 w-4 mr-2 text-emerald-400" />Si no encontrás una solución, enviá el nombre del archivo y el módulo donde debería estar para poder ayudarte.</div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
