@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { driveTree } from "@/data/driveTree";
 import {
   ArrowLeft,
   Database,
@@ -40,18 +41,9 @@ const ICON_MAP: Record<string, any> = {
   Key,
 };
 
-const DRIVE_ROOT_ID = "1wY57MfifTjXkTDrMH-daf5_8EhAgwSyq";
+const DRIVE_ROOT_ID = driveTree.rootId;
 const DRIVE_ROOT_LINK = `https://drive.google.com/drive/folders/${DRIVE_ROOT_ID}`;
-
-const moduleOneFolders = [
-  { id: "software", driveId: "1NOyjwivenVXr6YXgl16w2FgdZGnTpgJT", name: "01 Software y Herramientas", count: 3, description: "IMMO CODE CALC SERVICE DIAGN PROG, ECM Titanium y WinOLS" },
-  { id: "remap", driveId: "1XAJUxry2PKM0-k-1rP8qrfQmbhEoBOAF", name: "02 Archivos de Remap", count: 4, description: "Motos y Marine, Agrícola, Camiones y Buses, Turismos y Pickups" },
-  { id: "damos", driveId: "1ohH-9v9ewktFBWrHKl3-_xUkzt229Il7", name: "03 DAMOS y Map Packs", count: 3, description: "WINOLS DAMOS, MAP PACKS POTENCIA y archivo de 100GB" },
-  { id: "manuales", driveId: "1IJCgYEQGsEJG0l7Z0u8sFztHIPMxBGKK", name: "04 Manuales y Curso", count: 3, description: "Vídeo aulas de instalación, manual ECU y documentación PDF" },
-  { id: "bonus", driveId: "1wL5jBljsFAu3V5xcmuU8EELa6MJmCJCd", name: "05 Bonus", count: 6, description: "Certificados, apostillas WinOLS, precios, mapas y manuales técnicos" },
-  { id: "allfilesecure", driveId: "1KAwtsZkvHLIxGeYsuhIA6oxqF3ajjnaN", name: "allfilesecure-home", count: 6, description: "Código, logo, términos, contacto y sitio allfilesecure" },
-  { id: "velora", driveId: "15daOLHmWD3iEMzTnn2pQWXGevcv4Bkid", name: "velora-labs-home", count: 6, description: "Código, logo, términos, contacto y sitio velora labs" },
-];
+const moduleOneFolders = driveTree.children;
 
 export default function ModuleDetail() {
   const [, params] = useRoute("/module/:id");
@@ -77,7 +69,7 @@ export default function ModuleDetail() {
     const term = folderSearch.trim().toLowerCase();
     if (!term) return moduleOneFolders;
     return moduleOneFolders.filter((folder) =>
-      `${folder.name} ${folder.description}`.toLowerCase().includes(term)
+      `${folder.name} ${((folder as any).children ?? []).map((child: any) => child.name).join(" ")}`.toLowerCase().includes(term)
     );
   }, [folderSearch]);
 
@@ -162,11 +154,11 @@ export default function ModuleDetail() {
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div>
                   <p className="text-sm text-slate-200 leading-relaxed">
-                    Biblioteca completa conectada en tiempo real. Navega por las carpetas o busca cualquier archivo por nombre (marca, modelo, ECU...).
+                    Biblioteca indexada desde la carpeta real de Google Drive. Navega por las carpetas o busca cualquier archivo por nombre (marca, modelo, ECU...).
                   </p>
                   <div className="flex items-center gap-2 mt-2 text-xs text-emerald-300">
                     <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                    Carpetas indexadas de Google Drive
+                    Estructura verificada en la última auditoría de Google Drive
                   </div>
                 </div>
                   <Button onClick={handleOpenDrive} className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold shrink-0">
@@ -210,11 +202,11 @@ export default function ModuleDetail() {
                         <Folder className="h-5 w-5 text-cyan-400 shrink-0" />
                         <span className="min-w-0">
                           <span className="block text-sm font-semibold text-slate-100 truncate">{folder.name}</span>
-                      <span className="block text-[11px] text-slate-500 mt-0.5 truncate">{folder.description}</span>
+                      <span className="block text-[11px] text-slate-500 mt-0.5 truncate">{((folder as any).children ?? []).slice(0, 4).map((child: any) => child.name).join(", ") || "Carpeta indexada de Google Drive"}</span>
                         </span>
                       </span>
                       <span className="flex items-center gap-3 shrink-0">
-                        <span className="hidden sm:inline text-[11px] text-slate-500">{folder.count.toLocaleString()} recursos</span>
+                        <span className="hidden sm:inline text-[11px] text-slate-500">{((folder as any).children ?? []).length.toLocaleString()} elementos</span>
                         <ChevronRight className="h-4 w-4 text-slate-500 group-hover:text-cyan-300 group-hover:translate-x-0.5 transition-all" />
                       </span>
                     </button>
@@ -229,17 +221,27 @@ export default function ModuleDetail() {
                 <div className="flex items-center justify-between gap-3 mb-3">
                   <div>
                     <h2 className="text-base font-bold text-white flex items-center gap-2"><Folder className="h-4 w-4 text-cyan-400" /> {selectedFolder.name}</h2>
-                    <p className="text-xs text-slate-500 mt-1">{selectedFolder.description}</p>
+                    <p className="text-xs text-slate-500 mt-1">{((selectedFolder as any).children ?? []).length} elementos indexados en esta carpeta</p>
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => setFolderId(null)} className="text-cyan-300 hover:text-white">Volver a raíz</Button>
                 </div>
                 <div className="p-6 rounded-xl border border-dashed border-cyan-500/30 bg-cyan-500/5 text-center">
                   <FileBox className="h-9 w-9 mx-auto text-cyan-400 mb-2" />
                   <p className="text-sm font-semibold text-white">Carpeta indexada correctamente</p>
-                  <p className="text-xs text-slate-400 mt-1">Aquí aparecerán los archivos reales de Drive cuando conectemos el ID de esta carpeta.</p>
+                  <p className="text-xs text-slate-400 mt-1">Contenido leído desde Google Drive en la última auditoría.</p>
+                  {((selectedFolder as any).children ?? []).length > 0 && (
+                    <div className="mt-5 text-left rounded-lg border border-white/10 overflow-hidden bg-[#050b12]/70">
+                      {((selectedFolder as any).children ?? []).map((child: any, index: number) => (
+                        <a key={child.id} href={child.webViewLink} target="_blank" rel="noreferrer" className={`flex items-center justify-between gap-3 px-3 py-2.5 hover:bg-cyan-500/10 transition-colors ${index ? "border-t border-white/10" : ""}`}>
+                          <span className="flex items-center gap-2 min-w-0">{child.mimeType === "application/vnd.google-apps.folder" ? <Folder className="h-4 w-4 text-cyan-400 shrink-0" /> : <FileBox className="h-4 w-4 text-cyan-400 shrink-0" />}<span className="text-xs text-slate-200 truncate">{child.name}</span></span>
+                          <ArrowUpRight className="h-3.5 w-3.5 text-slate-500 shrink-0" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
                   <div className="flex flex-wrap justify-center gap-2 mt-4">
                     <Button onClick={() => setLocation(`/drive-explorer?module=${moduleId}`)} variant="outline" className="border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10">Abrir explorador de archivos</Button>
-                    <Button onClick={() => window.open(`https://drive.google.com/drive/folders/${selectedFolder.driveId}`, "_blank", "noopener,noreferrer")} variant="ghost" className="text-slate-300 hover:text-white">Abrir carpeta real</Button>
+                    <Button onClick={() => window.open(`https://drive.google.com/drive/folders/${selectedFolder.id}`, "_blank", "noopener,noreferrer")} variant="ghost" className="text-slate-300 hover:text-white">Abrir carpeta real</Button>
                   </div>
                 </div>
               </div>
