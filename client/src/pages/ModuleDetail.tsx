@@ -52,6 +52,7 @@ const WINOLS_VIDEO_URL = "https://www.youtube.com/embed/tMOML4ZLjF8";
 const WINOLS_MEGA_URL = "https://mega.nz/file/VrcWEaAR#haEkNgQnMwM--XrMiEmrU0rPzGXG3dzpooRWgAbRTy4";
 const ECM_MEGA_URL = "https://mega.nz/file/EjNBjAgA#5Abr9Wy7yQpz3YOXJDcO3N7dDLTZ267ALVpzDPpOylg";
 const ACTIVATORS_DOWNLOAD = "/manus-storage/todos-activadores-generadores_6ccfd1c3.zip";
+const MODULE6_DRIVE_URL = "https://drive.google.com/file/d/179I8C9zUFrY2IKckC3gqlSH-uBHW3BXa/view";
 const moduleOneFolders = driveTree.children;
 const moduleTwoFolders = courseWinolsTree.children;
 
@@ -180,6 +181,27 @@ export default function ModuleDetail() {
     }
     window.open(remapVideosTree.webViewLink, "_blank", "noopener,noreferrer");
   };
+
+  const openModule6Download = () => {
+    if (!isVip) {
+      toast.error("Descarga protegida", { description: "Necesitas una membresía VIP activa para descargar el paquete completo.", action: { label: "Ver planes", onClick: () => setLocation("/pricing") } });
+      return;
+    }
+    window.open(MODULE6_DRIVE_URL, "_blank", "noopener,noreferrer");
+  };
+
+  if (moduleId === "key-immo-airbag") {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#050811] text-slate-100">
+        <Navbar />
+        <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+          <Link href="/" className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors"><ArrowLeft className="h-3.5 w-3.5" /> Volver a los módulos</Link>
+          <div className="mt-8 mb-6"><div className="flex items-center gap-2 mb-2"><span className="inline-flex items-center gap-2 px-3 py-1 rounded-xl border border-fuchsia-500/40 bg-fuchsia-500/10 text-fuchsia-300 text-[11px] font-bold uppercase tracking-wider"><Key className="h-4 w-4" /> MÓDULO 06</span>{isVip ? <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 text-[10px]"><Unlock className="h-3 w-3 mr-1" /> Acceso VIP habilitado</Badge> : <Badge className="bg-amber-500/10 text-amber-300 border-amber-500/30 text-[10px]"><Lock className="h-3 w-3 mr-1" /> Requiere membresía</Badge>}</div><h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Key Code-v2 / Immo OFF / KM / Airbag / Servicio / Programador</h1><p className="text-sm text-slate-400 font-medium mt-1">Más de 170 softwares para servicios y reparación de módulos</p></div>
+          <section className="p-5 sm:p-7 rounded-2xl border border-white/15 bg-[#07101a]/90 shadow-2xl shadow-fuchsia-950/20"><p className="text-sm text-slate-300 leading-relaxed">Más de 170 softwares para servicios de ajuste y reparación de módulos de varias marcas.</p><div className="mt-5 p-5 rounded-xl border border-fuchsia-400/35 bg-gradient-to-br from-fuchsia-950/45 via-[#180d20]/90 to-slate-950/90 shadow-lg shadow-fuchsia-950/25"><div className="text-[10px] uppercase tracking-widest text-fuchsia-300 font-bold">DESCARGA OFICIAL</div><h2 className="text-lg font-bold text-white mt-2">Paquete completo — +170 softwares</h2><p className="text-xs text-slate-300 mt-1">Accede al paquete completo con todos los softwares para Key Code v2, Immo OFF, corrección de KM, Airbag, Service y Programadores.</p><Button onClick={openModule6Download} className={isVip ? "mt-4 bg-fuchsia-500 hover:bg-fuchsia-400 text-white font-bold" : "mt-4 bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold"}>{isVip ? <><Download className="h-4 w-4 mr-2" /> Descargar paquete completo</> : <><Lock className="h-4 w-4 mr-2" /> Desbloquear paquete</>}</Button></div></section>
+        </main>
+      </div>
+    );
+  }
 
   if (moduleId === "software-remap") {
     return (
