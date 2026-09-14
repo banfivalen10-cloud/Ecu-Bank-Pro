@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { driveTree } from "@/data/driveTree";
 import { courseWinolsTree } from "@/data/courseWinolsTree";
+import { winolsTree } from "@/data/winolsTree";
 import {
   ArrowLeft,
   Database,
@@ -70,7 +71,7 @@ export default function ModuleDetail() {
   const IconComp = mod ? ICON_MAP[mod.icon] || Database : Database;
   const isDriveIndexedModule = moduleId === "stage-damos" || moduleId === "curso-winols";
   const indexedFolders = moduleId === "curso-winols" ? moduleTwoFolders : moduleOneFolders;
-  const moduleDriveLink = moduleId === "curso-winols" ? courseWinolsTree.webViewLink : DRIVE_ROOT_LINK;
+  const moduleDriveLink = moduleId === "curso-winols" ? courseWinolsTree.webViewLink : moduleId === "winols-software" ? winolsTree.webViewLink : DRIVE_ROOT_LINK;
 
   const visibleFolders = useMemo(() => {
     const term = folderSearch.trim().toLowerCase();
@@ -140,6 +141,16 @@ export default function ModuleDetail() {
     window.open(WINOLS_MEGA_URL, "_blank", "noopener,noreferrer");
   };
 
+  const openWinolsFile = (file: (typeof winolsTree.children)[number]) => {
+    if (!isVip) {
+      toast.error("Archivo protegido", { description: "Necesitas una membresía VIP activa para abrir los archivos de WinOLS.", action: { label: "Ver planes", onClick: () => setLocation("/pricing") } });
+      return;
+    }
+    window.open(file.webViewLink, "_blank", "noopener,noreferrer");
+  };
+
+  const visibleWinolsFiles = winolsTree.children.filter((file) => file.name.toLowerCase().includes(folderSearch.trim().toLowerCase()));
+
   if (moduleId === "winols-software") {
     return (
       <div className="min-h-screen flex flex-col bg-[#050811] text-slate-100">
@@ -158,6 +169,8 @@ export default function ModuleDetail() {
           </section>
 
           <section className="mt-6 rounded-2xl border border-white/10 bg-slate-900/70 overflow-hidden"><div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between gap-3"><div><div className="text-[10px] uppercase tracking-widest text-cyan-300 font-bold">VIDEO DE INSTALACIÓN</div><h2 className="text-base sm:text-lg font-bold text-white mt-1">WinOLS 4.7 — Instalación y configuración</h2></div><PlayCircle className="h-6 w-6 text-red-400 shrink-0" /></div><div className="aspect-video bg-black"><iframe className="w-full h-full" src={WINOLS_VIDEO_URL} title="Tutorial de instalación de WinOLS" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div><div className="p-4 flex flex-wrap items-center justify-between gap-3"><span className="text-xs text-slate-400">Tutorial enlazado desde YouTube</span><a href="https://youtu.be/tMOML4ZLjF8" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-300 hover:text-cyan-200">Ver en YouTube <ExternalLink className="h-3.5 w-3.5" /></a></div></section>
+
+          <section className="mt-6 rounded-2xl border border-white/10 bg-slate-900/60 overflow-hidden"><div className="p-5 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3"><div><div className="text-[10px] uppercase tracking-widest text-cyan-300 font-bold">CARPETA REAL DE GOOGLE DRIVE</div><h2 className="text-base font-bold text-white mt-1">WinOLS</h2><p className="text-xs text-slate-400 mt-1">{winolsTree.children.length} archivos indexados en esta carpeta.</p></div><Button onClick={() => window.open(winolsTree.webViewLink, "_blank", "noopener,noreferrer")} variant="outline" size="sm" className="border-cyan-500/30 text-cyan-300">Abrir carpeta en Drive <ExternalLink className="h-3.5 w-3.5 ml-1.5" /></Button></div><div className="p-4"><div className="relative mb-3"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" /><Input value={folderSearch} onChange={(event) => setFolderSearch(event.target.value)} placeholder="Buscar dentro de WinOLS..." className="h-10 pl-9 bg-slate-950/70 border-white/10 text-white placeholder:text-slate-500" /></div><div className="rounded-xl border border-white/10 overflow-hidden">{visibleWinolsFiles.map((file, index) => <button key={file.id} type="button" onClick={() => openWinolsFile(file)} className={`w-full flex items-center justify-between gap-3 p-3 text-left hover:bg-cyan-500/10 transition-colors ${index ? "border-t border-white/10" : ""}`}><span className="flex items-center gap-2 min-w-0"><FileBox className="h-4 w-4 text-cyan-400 shrink-0" /><span className="text-sm text-slate-200 truncate">{file.name}</span></span><span className="flex items-center gap-2 shrink-0"><Badge variant="outline" className="text-[10px] border-cyan-500/20 text-cyan-300">{file.mimeType.includes("7z") ? "7Z" : "TXT"}</Badge>{isVip ? <ExternalLink className="h-3.5 w-3.5 text-slate-500" /> : <Lock className="h-3.5 w-3.5 text-amber-400" />}</span></button>)}{visibleWinolsFiles.length === 0 && <p className="p-5 text-center text-sm text-slate-500">No se encontraron archivos.</p>}</div></div></section>
 
           <section className="mt-6 p-5 rounded-2xl border border-white/10 bg-slate-900/60"><div className="flex items-center justify-between gap-3 mb-4"><div><h2 className="text-base font-bold text-white">Recursos del módulo</h2><p className="text-xs text-slate-400 mt-1">Archivos asociados y enlaces de la biblioteca.</p></div><Link href="/drive-explorer?module=winols-software"><Button variant="outline" size="sm" className="border-white/15 text-slate-300">Buscar en Drive</Button></Link></div>{files.length === 0 ? <p className="text-sm text-slate-500">No hay archivos adicionales indexados todavía.</p> : <div className="space-y-2">{files.map((file) => <div key={file.id} className="flex items-center justify-between gap-3 p-3 rounded-lg bg-slate-950/70 border border-white/5"><span className="text-sm text-slate-200 truncate">{file.name}</span><Badge variant="outline" className="text-[10px] border-cyan-500/20 text-cyan-300 shrink-0">{file.extension}</Badge></div>)}</div>}</section>
         </main>
