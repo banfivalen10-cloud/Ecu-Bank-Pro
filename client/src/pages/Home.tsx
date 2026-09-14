@@ -29,10 +29,20 @@ const ICON_MAP: Record<string, any> = {
   Key,
 };
 
+const FALLBACK_MODULES = [
+  { id: "stage-damos", code: "MÓDULO 01", title: "Banco de Archivos, Stage, DAMOS, Mappacks", subtitle: "Biblioteca completa de recursos", description: "Archivos originales y modificados, Stages de potencia, DAMOS y Mappacks organizados por marca y modelo.", icon: "Database", accentColor: "#38bdf8", tags: JSON.stringify(["ORIGINALES", "STAGE 1-3", "DAMOS", "MAPPACKS"]) },
+  { id: "curso-winols", code: "MÓDULO 02", title: "Curso WinOLS para Descarga", subtitle: "Formación completa paso a paso", description: "Curso profesional desde cero hasta nivel avanzado para leer, editar y grabar centralitas con WinOLS.", icon: "GraduationCap", accentColor: "#f59e0b", tags: JSON.stringify(["DESDE CERO", "PRÁCTICO"]) },
+  { id: "winols-software", code: "MÓDULO 03", title: "WinOLS", subtitle: "Software profesional de reprogramación", description: "Guía de instalación, licenciamiento y uso avanzado de WinOLS.", icon: "Cpu", accentColor: "#10b981", tags: JSON.stringify(["INSTALACIÓN", "CONFIGURACIÓN", "USO AVANZADO"]) },
+  { id: "ecm-titanium", code: "MÓDULO 04", title: "ECM Titanium", subtitle: "Editor alternativo con drivers ilimitados", description: "Instalación, drivers, edición de mapas y compatibilidad con las principales centralitas.", icon: "Zap", accentColor: "#8b5cf6", tags: JSON.stringify(["DRIVERS", "MAPAS", "COMPATIBILIDAD"]) },
+  { id: "software-remap", code: "MÓDULO 05", title: "Paquete de Software Profesional para Remap", subtitle: "Suite completa de herramientas de reprogramación", description: "Instaladores, activadores, generadores de contraseña y herramientas para taller.", icon: "Box", accentColor: "#06b6d4", tags: JSON.stringify(["INSTALADORES", "ACTIVADORES", "ÚTILES"]) },
+  { id: "key-immo-airbag", code: "MÓDULO 06", title: "Key Code-v2 / Immo OFF / KM / Airbag / Servicio / Programador", subtitle: "Software para servicios y reparación de módulos", description: "Herramientas para Key Code, Immo OFF, corrección de KM, Airbag, Service y programadores.", icon: "Key", accentColor: "#ec4899", tags: JSON.stringify(["KEY CODE", "IMMO OFF", "KM", "AIRBAG"]) },
+];
+
 export default function Home() {
   const [, setLocation] = useLocation();
   const [search, setSearch] = useState("");
   const { data: modules, isLoading } = trpc.library.modules.useQuery();
+  const visibleModules = modules?.length ? modules : FALLBACK_MODULES;
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,7 +143,7 @@ export default function Home() {
 
         </div>
 
-        {isLoading ? (
+        {isLoading && !modules ? (
           <div className="space-y-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="h-28 rounded-2xl bg-white/5 animate-pulse" />
@@ -141,7 +151,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="space-y-4">
-            {modules?.map((item) => {
+            {visibleModules.map((item) => {
               const IconComp = ICON_MAP[item.icon] || Database;
               let tagsArray: string[] = [];
               try {
