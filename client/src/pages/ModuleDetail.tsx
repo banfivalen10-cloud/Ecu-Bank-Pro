@@ -31,6 +31,7 @@ import {
   ArrowUpRight,
   FileBox,
   HardDrive,
+  PlayCircle,
 } from "lucide-react";
 
 const ICON_MAP: Record<string, any> = {
@@ -44,6 +45,8 @@ const ICON_MAP: Record<string, any> = {
 
 const DRIVE_ROOT_ID = driveTree.rootId;
 const DRIVE_ROOT_LINK = `https://drive.google.com/drive/folders/${DRIVE_ROOT_ID}`;
+const WINOLS_VIDEO_URL = "https://www.youtube.com/embed/tMOML4ZLjF8";
+const WINOLS_MEGA_URL = "https://mega.nz/file/VrcWEaAR#haEkNgQnMwM--XrMiEmrU0rPzGXG3dzpooRWgAbRTy4";
 const moduleOneFolders = driveTree.children;
 const moduleTwoFolders = courseWinolsTree.children;
 
@@ -125,6 +128,42 @@ export default function ModuleDetail() {
 
   let tagsArray: string[] = [];
   try { tagsArray = JSON.parse(mod.tags); } catch { tagsArray = [mod.tags]; }
+
+  const openWinolsDownload = () => {
+    if (!isVip) {
+      toast.error("Descarga protegida", {
+        description: "Necesitas una membresía VIP activa para descargar WinOLS.",
+        action: { label: "Ver planes", onClick: () => setLocation("/pricing") },
+      });
+      return;
+    }
+    window.open(WINOLS_MEGA_URL, "_blank", "noopener,noreferrer");
+  };
+
+  if (moduleId === "winols-software") {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#050811] text-slate-100">
+        <Navbar />
+        <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+          <Link href="/" className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors"><ArrowLeft className="h-3.5 w-3.5" /> Volver a los módulos</Link>
+          <div className="mt-8 mb-6">
+            <div className="flex items-center gap-2 mb-2"><span className="inline-flex items-center gap-2 px-3 py-1 rounded-xl border border-cyan-500/40 bg-cyan-500/10 text-cyan-300 text-[11px] font-bold uppercase tracking-wider"><Cpu className="h-4 w-4" /> MÓDULO 03</span>{isVip ? <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 text-[10px]"><Unlock className="h-3 w-3 mr-1" /> Acceso VIP habilitado</Badge> : <Badge className="bg-amber-500/10 text-amber-300 border-amber-500/30 text-[10px]"><Lock className="h-3 w-3 mr-1" /> Requiere membresía</Badge>}</div>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">WinOLS</h1>
+            <p className="text-sm text-slate-400 font-medium mt-1">Software profesional de reprogramación</p>
+          </div>
+
+          <section className="p-5 sm:p-7 rounded-2xl border border-white/15 bg-[#07101a]/90 shadow-2xl shadow-cyan-950/20">
+            <p className="text-sm text-slate-300 leading-relaxed">WinOLS es la herramienta más utilizada por profesionales del chiptuning. Aquí encontrás la descarga oficial del instalador y un tutorial guiado para instalarlo correctamente.</p>
+            <div className="mt-5 p-4 rounded-xl bg-slate-950/80 border border-cyan-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4"><div><div className="text-[10px] uppercase tracking-widest text-cyan-300 font-bold">DESCARGA PROTEGIDA</div><h2 className="text-lg font-bold text-white mt-1">WinOLS — Instalador completo</h2><p className="text-xs text-slate-400 mt-1">Archivo alojado en Mega para descargar e instalar.</p></div><Button onClick={openWinolsDownload} className={isVip ? "bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold" : "bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold"}>{isVip ? <><Download className="h-4 w-4 mr-2" /> Descargar WinOLS</> : <><Lock className="h-4 w-4 mr-2" /> Desbloquear descarga</>}</Button></div>
+          </section>
+
+          <section className="mt-6 rounded-2xl border border-white/10 bg-slate-900/70 overflow-hidden"><div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between gap-3"><div><div className="text-[10px] uppercase tracking-widest text-cyan-300 font-bold">VIDEO DE INSTALACIÓN</div><h2 className="text-base sm:text-lg font-bold text-white mt-1">WinOLS 4.7 — Instalación y configuración</h2></div><PlayCircle className="h-6 w-6 text-red-400 shrink-0" /></div><div className="aspect-video bg-black"><iframe className="w-full h-full" src={WINOLS_VIDEO_URL} title="Tutorial de instalación de WinOLS" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div><div className="p-4 flex flex-wrap items-center justify-between gap-3"><span className="text-xs text-slate-400">Tutorial enlazado desde YouTube</span><a href="https://youtu.be/tMOML4ZLjF8" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-300 hover:text-cyan-200">Ver en YouTube <ExternalLink className="h-3.5 w-3.5" /></a></div></section>
+
+          <section className="mt-6 p-5 rounded-2xl border border-white/10 bg-slate-900/60"><div className="flex items-center justify-between gap-3 mb-4"><div><h2 className="text-base font-bold text-white">Recursos del módulo</h2><p className="text-xs text-slate-400 mt-1">Archivos asociados y enlaces de la biblioteca.</p></div><Link href="/drive-explorer?module=winols-software"><Button variant="outline" size="sm" className="border-white/15 text-slate-300">Buscar en Drive</Button></Link></div>{files.length === 0 ? <p className="text-sm text-slate-500">No hay archivos adicionales indexados todavía.</p> : <div className="space-y-2">{files.map((file) => <div key={file.id} className="flex items-center justify-between gap-3 p-3 rounded-lg bg-slate-950/70 border border-white/5"><span className="text-sm text-slate-200 truncate">{file.name}</span><Badge variant="outline" className="text-[10px] border-cyan-500/20 text-cyan-300 shrink-0">{file.extension}</Badge></div>)}</div>}</section>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#050811] text-slate-100">
