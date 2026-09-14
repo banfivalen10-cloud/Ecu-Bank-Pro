@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { driveTree } from "@/data/driveTree";
+import { courseWinolsTree } from "@/data/courseWinolsTree";
 import {
   ArrowLeft,
   Database,
@@ -44,15 +45,7 @@ const ICON_MAP: Record<string, any> = {
 const DRIVE_ROOT_ID = driveTree.rootId;
 const DRIVE_ROOT_LINK = `https://drive.google.com/drive/folders/${DRIVE_ROOT_ID}`;
 const moduleOneFolders = driveTree.children;
-const moduleTwoFolders = [
-  { id: "curso-winols-01", name: "Módulo 1- Que es winols", children: [] },
-  { id: "curso-winols-02", name: "Módulo 2- Estructura y manejo del software", children: [] },
-  { id: "curso-winols-03", name: "Módulo 3- Creación de un proyecto desde un File Original", children: [] },
-  { id: "curso-winols-04", name: "Módulo 4- Conceptos necesarios para la comprensión, estructuración y modificación de un proyecto", children: [] },
-  { id: "curso-winols-05", name: "Módulo 5- Los mapas y ayuda a su localización, ejes, factores y el Checksum", children: [] },
-  { id: "curso-winols-06", name: "Módulo 6- Conceptos Básicos para realizar una modificación", children: [] },
-  { id: "curso-winols-07", name: "Módulo 7- Material descargable", children: [] },
-];
+const moduleTwoFolders = courseWinolsTree.children;
 
 export default function ModuleDetail() {
   const [, params] = useRoute("/module/:id");
@@ -74,7 +67,7 @@ export default function ModuleDetail() {
   const IconComp = mod ? ICON_MAP[mod.icon] || Database : Database;
   const isDriveIndexedModule = moduleId === "stage-damos" || moduleId === "curso-winols";
   const indexedFolders = moduleId === "curso-winols" ? moduleTwoFolders : moduleOneFolders;
-  const moduleDriveLink = moduleId === "curso-winols" ? "https://drive.google.com/drive/folders/tunebank-curso-winols" : DRIVE_ROOT_LINK;
+  const moduleDriveLink = moduleId === "curso-winols" ? courseWinolsTree.webViewLink : DRIVE_ROOT_LINK;
 
   const visibleFolders = useMemo(() => {
     const term = folderSearch.trim().toLowerCase();
@@ -169,7 +162,7 @@ export default function ModuleDetail() {
                   </p>
                   <div className="flex items-center gap-2 mt-2 text-xs text-emerald-300">
                     <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                    {moduleId === "curso-winols" ? "Estructura del curso preparada para vincular con Google Drive" : "Estructura verificada en la última auditoría de Google Drive"}
+                    {moduleId === "curso-winols" ? "Contenido real de Google Drive auditado y sincronizado" : "Estructura verificada en la última auditoría de Google Drive"}
                   </div>
                 </div>
                   <Button onClick={handleOpenDrive} className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold shrink-0">
