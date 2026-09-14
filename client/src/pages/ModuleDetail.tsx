@@ -11,6 +11,7 @@ import { driveTree } from "@/data/driveTree";
 import { courseWinolsTree } from "@/data/courseWinolsTree";
 import { winolsTree } from "@/data/winolsTree";
 import { ecmTitaniumTree } from "@/data/ecmTitaniumTree";
+import { remapVideosTree } from "@/data/remapVideosTree";
 import {
   ArrowLeft,
   Database,
@@ -170,6 +171,28 @@ export default function ModuleDetail() {
   };
 
   const visibleEcmFiles = ecmTitaniumTree.children.filter((file) => file.name.toLowerCase().includes(folderSearch.trim().toLowerCase()));
+
+  const openRemapVideos = () => {
+    if (!isVip) {
+      toast.error("Contenido protegido", { description: "Necesitas una membresía VIP activa para acceder a las videoclases.", action: { label: "Ver planes", onClick: () => setLocation("/pricing") } });
+      return;
+    }
+    window.open(remapVideosTree.webViewLink, "_blank", "noopener,noreferrer");
+  };
+
+  if (moduleId === "software-remap") {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#050811] text-slate-100">
+        <Navbar />
+        <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+          <Link href="/" className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors"><ArrowLeft className="h-3.5 w-3.5" /> Volver a los módulos</Link>
+          <div className="mt-8 mb-6"><div className="flex items-center gap-2 mb-2"><span className="inline-flex items-center gap-2 px-3 py-1 rounded-xl border border-cyan-500/40 bg-cyan-500/10 text-cyan-300 text-[11px] font-bold uppercase tracking-wider"><Box className="h-4 w-4" /> MÓDULO 05</span>{isVip ? <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 text-[10px]"><Unlock className="h-3 w-3 mr-1" /> Acceso VIP habilitado</Badge> : <Badge className="bg-amber-500/10 text-amber-300 border-amber-500/30 text-[10px]"><Lock className="h-3 w-3 mr-1" /> Requiere membresía</Badge>}</div><h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Paquete de Software Profesional para Remap</h1><p className="text-sm text-slate-400 font-medium mt-1">Suite completa de herramientas de reprogramación</p></div>
+          <section className="p-5 sm:p-7 rounded-2xl border border-white/15 bg-[#07101a]/90 shadow-2xl shadow-cyan-950/20"><p className="text-sm text-slate-300 leading-relaxed">Suite completa con instaladores, activadores y videoclases paso a paso. Todos los enlaces oficiales organizados por programa.</p><div className="mt-5 p-5 rounded-xl border border-fuchsia-400/30 bg-gradient-to-br from-fuchsia-950/45 via-[#180d20]/90 to-[#07101a]/95 shadow-lg shadow-fuchsia-950/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4"><div className="flex items-start gap-3"><div className="h-11 w-11 rounded-xl bg-fuchsia-400/15 border border-fuchsia-300/30 flex items-center justify-center shrink-0"><PlayCircle className="h-5 w-5 text-fuchsia-300" /></div><div><div className="text-[10px] uppercase tracking-widest text-fuchsia-300 font-bold">VIDEOCLASES</div><h2 className="text-lg font-bold text-white mt-1">Videoclases de las instalaciones y paso a paso de los programas</h2><p className="text-xs text-fuchsia-100/70 mt-1">Aprende visualmente cómo instalar y configurar cada uno de los programas del paquete.</p></div></div><Button onClick={openRemapVideos} className={isVip ? "bg-fuchsia-400 hover:bg-fuchsia-300 text-fuchsia-950 font-bold shadow-lg shadow-fuchsia-500/20" : "bg-fuchsia-500 hover:bg-fuchsia-400 text-white font-bold"}>{isVip ? <><PlayCircle className="h-4 w-4 mr-2" /> Acceder a los videos</> : <><Lock className="h-4 w-4 mr-2" /> Desbloquear videos</>}</Button></div></section>
+          <section className="mt-6 rounded-2xl border border-white/10 bg-slate-900/60 overflow-hidden"><div className="p-5 border-b border-white/10 flex items-center justify-between gap-3"><div><div className="text-[10px] uppercase tracking-widest text-cyan-300 font-bold">CARPETA REAL DE GOOGLE DRIVE</div><h2 className="text-base font-bold text-white mt-1">Videoclases</h2><p className="text-xs text-slate-400 mt-1">{remapVideosTree.children.length} carpetas de instalación indexadas.</p></div><Button onClick={() => window.open(remapVideosTree.webViewLink, "_blank", "noopener,noreferrer")} variant="outline" size="sm" className="border-cyan-500/30 text-cyan-300">Abrir en Google Drive <ExternalLink className="h-3.5 w-3.5 ml-1.5" /></Button></div><div className="p-4 space-y-2">{remapVideosTree.children.map((folder) => <button key={folder.id} type="button" onClick={() => isVip ? window.open(folder.webViewLink, "_blank", "noopener,noreferrer") : toast.error("Contenido protegido", { description: "Necesitas una membresía VIP activa para abrir esta carpeta." })} className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-slate-950/60 border border-white/5 hover:bg-cyan-500/10 text-left transition-colors"><span className="flex items-center gap-2 min-w-0"><FolderSync className="h-4 w-4 text-cyan-400 shrink-0" /><span className="text-sm text-slate-200 truncate">{folder.name}</span></span>{isVip ? <ExternalLink className="h-3.5 w-3.5 text-slate-500 shrink-0" /> : <Lock className="h-3.5 w-3.5 text-amber-400 shrink-0" />}</button>)}</div></section>
+        </main>
+      </div>
+    );
+  }
 
   if (moduleId === "ecm-titanium") {
     return (
