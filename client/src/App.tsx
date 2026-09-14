@@ -7,7 +7,6 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import ModuleDetail from "./pages/ModuleDetail";
 import DriveExplorer from "./pages/DriveExplorer";
-import Pricing from "./pages/Pricing";
 import Login from "./pages/Login";
 
 function Router() {
@@ -16,7 +15,6 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/module/:id" component={ModuleDetail} />
       <Route path="/drive-explorer" component={DriveExplorer} />
-      <Route path="/pricing" component={Pricing} />
       <Route path="/login" component={Login} />
       <Route path="/404" component={NotFound} />
       {/* Final fallback route */}

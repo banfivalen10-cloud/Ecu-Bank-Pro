@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Navbar } from "@/components/Navbar";
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,12 +15,9 @@ import {
   Search,
   ArrowRight,
   ExternalLink,
-  Lock,
-  Unlock,
   CheckCircle2,
   FolderSync,
   HelpCircle,
-  FileCheck,
 } from "lucide-react";
 
 const ICON_MAP: Record<string, any> = {
@@ -35,11 +31,8 @@ const ICON_MAP: Record<string, any> = {
 
 export default function Home() {
   const [, setLocation] = useLocation();
-  const { user } = useAuth();
   const [search, setSearch] = useState("");
   const { data: modules, isLoading } = trpc.library.modules.useQuery();
-
-  const isVip = user?.membershipStatus === "vip_lifetime" || user?.membershipStatus === "vip_monthly";
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,24 +125,12 @@ export default function Home() {
           <div>
             <h2 className="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
               Módulos Disponibles
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
-                Acceso VIP
-              </span>
             </h2>
             <p className="text-sm text-slate-400 mt-1">
               Explora cada sección de contenido estructurado. Pulsa en cualquier módulo para ver sus archivos y detalles.
             </p>
           </div>
 
-          <Link href="/pricing">
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-white/10 hover:border-cyan-500/50 hover:bg-cyan-500/10 text-cyan-300 text-xs hidden sm:flex"
-            >
-              Ver Planes de Acceso
-            </Button>
-          </Link>
         </div>
 
         {isLoading ? (
@@ -188,16 +169,6 @@ export default function Home() {
                         <span className="text-[11px] font-bold tracking-widest text-cyan-400 uppercase">
                           {item.code}
                         </span>
-                        {item.requiresVip && !isVip && (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-300/80 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
-                            <Lock className="h-2.5 w-2.5" /> Requiere VIP
-                          </span>
-                        )}
-                        {item.requiresVip && isVip && (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-300/80 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                            <Unlock className="h-2.5 w-2.5" /> Desbloqueado
-                          </span>
-                        )}
                       </div>
 
                       <h3 className="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">
@@ -227,12 +198,8 @@ export default function Home() {
                   </div>
 
                   <div className="flex md:flex-col items-center md:items-end justify-between md:justify-center gap-3 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-white/5">
-                    <div className="text-xs text-slate-400 flex items-center gap-1.5">
-                      <FileCheck className="h-3.5 w-3.5 text-cyan-400" />
-                      <span>~{item.fileCountEstimate.toLocaleString()} archivos</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-cyan-400 text-xs font-bold group-hover:translate-x-1 transition-transform">
+                    <div className="flex md:flex-col items-center md:items-end gap-1 text-cyan-400 text-xs font-bold group-hover:translate-x-1 transition-transform">
+                      <span className="text-slate-300">Autos</span>
                       <span>Ver contenido</span>
                       <ArrowRight className="h-4 w-4" />
                     </div>
@@ -242,6 +209,9 @@ export default function Home() {
             })}
           </div>
         )}
+        <div onClick={() => setLocation("/module/bonus")} className="mt-4 glow-card group cursor-pointer p-6 rounded-2xl flex items-center justify-between gap-6 border border-fuchsia-500/20 bg-fuchsia-950/10">
+          <div><div className="text-[11px] font-bold tracking-widest text-fuchsia-300 uppercase">BONUS</div><h3 className="text-lg font-bold text-white mt-1">Bonus / Próximamente</h3><p className="text-xs text-slate-400 mt-1">Acceso con contraseña · nuevos recursos en preparación</p></div><div className="text-fuchsia-300 text-xs font-bold">Ver contenido <ArrowRight className="inline h-4 w-4 ml-1" /></div>
+        </div>
       </section>
 
       {/* Google Drive Connection Notice */}
@@ -267,11 +237,6 @@ export default function Home() {
                   Probar Buscador Drive
                 </Button>
               </Link>
-              <Link href="/pricing">
-                <Button variant="outline" className="border-white/20 text-white hover:bg-white/5">
-                  Simular Compra y Acceso
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
@@ -286,8 +251,7 @@ export default function Home() {
           <div className="flex items-center gap-6">
             <Link href="/" className="hover:text-slate-300 transition-colors">Inicio</Link>
             <Link href="/drive-explorer" className="hover:text-slate-300 transition-colors">Buscador</Link>
-            <Link href="/pricing" className="hover:text-slate-300 transition-colors">Precios</Link>
-            <Link href="/login" className="hover:text-slate-300 transition-colors">Acceso Miembros</Link>
+            <Link href="/login" className="hover:text-slate-300 transition-colors">Acceso / Registro</Link>
           </div>
         </div>
       </footer>

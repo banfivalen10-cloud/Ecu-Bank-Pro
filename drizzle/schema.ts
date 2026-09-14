@@ -29,7 +29,7 @@ export const modules = mysqlTable("modules", {
   fileCountEstimate: int("fileCountEstimate").notNull().default(0),
   driveFolderId: varchar("driveFolderId", { length: 128 }),
   orderIndex: int("orderIndex").notNull().default(0),
-  requiresVip: boolean("requiresVip").notNull().default(true),
+  requiresVip: boolean("requiresVip").notNull().default(false),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 

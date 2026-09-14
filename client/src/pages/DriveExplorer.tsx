@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { Navbar } from "@/components/Navbar";
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -89,8 +88,7 @@ export default function DriveExplorer() {
   const [query, setQuery] = useState(initialQuery);
   const [currentFolderId, setCurrentFolderId] = useState(initialFolder);
 
-  const { user } = useAuth();
-  const isVip = user?.membershipStatus === "vip_lifetime" || user?.membershipStatus === "vip_monthly";
+  const isVip = true;
   const currentFolder = findNode(rootNode, currentFolderId) ?? rootNode;
   const allFiles = useMemo(() => flattenFiles(rootNode), []);
   const normalizedQuery = query.trim().toLowerCase();
@@ -127,13 +125,6 @@ export default function DriveExplorer() {
       toast.error("Este elemento no tiene enlace de Drive disponible.");
       return;
     }
-    if (!isVip && !isFolder(node)) {
-      toast.error("Contenido protegido", {
-        description: "Necesitas una membresía activa para abrir archivos protegidos.",
-        action: { label: "Ver planes", onClick: () => setLocation("/pricing") },
-      });
-      return;
-    }
     window.open(node.webViewLink, "_blank", "noopener,noreferrer");
   };
 
@@ -152,7 +143,6 @@ export default function DriveExplorer() {
             <h1 className="text-3xl font-extrabold text-white tracking-tight">Explorador de Archivos</h1>
             <p className="text-sm text-slate-400 mt-1 max-w-2xl">Navega por la estructura real de TuneBank - Archivos/Files o busca cualquier archivo indexado por nombre.</p>
           </div>
-          {!isVip && <Button onClick={() => setLocation("/pricing")} className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold"><Lock className="h-4 w-4 mr-2" /> Desbloquear archivos VIP</Button>}
         </div>
 
         <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/80 border border-white/10 mb-6 space-y-4">
@@ -196,7 +186,7 @@ export default function DriveExplorer() {
           {visibleFiles.map((file, index) => (
             <div key={file.id} className={`p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-white/[0.03] ${!isSearching && (visibleFolders.length || index) ? "border-t border-white/10" : ""}`}>
               <div className="flex items-start gap-3.5 min-w-0"><div className="h-10 w-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">{fileIcon(file)}</div><div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><span className="font-semibold text-white text-sm truncate">{file.name}</span><Badge variant="outline" className="text-[10px] bg-emerald-500/10 border-emerald-500/30 text-emerald-300"><CheckCircle className="h-3 w-3 mr-1" /> Indexado</Badge></div><div className="flex flex-wrap items-center gap-2 text-xs text-slate-400 mt-1"><span>{formatSize(file.size)}</span>{file.modifiedTime && <span>• {new Date(file.modifiedTime).toLocaleDateString("es-AR")}</span>}{isSearching && file.path.length > 0 && <span className="text-cyan-300">• {file.path.map((item) => item.name).join(" / ")}</span>}</div></div></div>
-              <div className="flex items-center gap-2 shrink-0 self-end md:self-center"><Button size="sm" onClick={() => openDriveItem(file)} className={isVip ? "bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold" : "border-white/20 text-slate-300"} variant={isVip ? "default" : "outline"}>{isVip ? <><ExternalLink className="h-4 w-4 mr-1.5" /> Abrir en Drive</> : <><Lock className="h-3.5 w-3.5 mr-1.5 text-amber-400" /> Requiere VIP</>}</Button></div>
+              <div className="flex items-center gap-2 shrink-0 self-end md:self-center"><Button size="sm" onClick={() => openDriveItem(file)} className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold"><ExternalLink className="h-4 w-4 mr-1.5" /> Abrir en Drive</Button></div>
             </div>
           ))}
 
