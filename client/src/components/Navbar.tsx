@@ -23,12 +23,16 @@ import {
   ChevronDown,
   Layers,
   Crown,
+  Monitor,
+  Smartphone,
+  Menu,
 } from "lucide-react";
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const [, setLocation] = useLocation();
   const [lang, setLang] = useState<"ES" | "EN">("ES");
+  const [deviceMode, setDeviceMode] = useState<"pc" | "mobile">("pc");
   const utils = trpc.useUtils();
 
   const simulateAccess = trpc.membership.simulateDirectAccess.useMutation({
@@ -44,10 +48,17 @@ export function Navbar() {
 
   const isVip = user?.membershipStatus === "vip_lifetime" || user?.membershipStatus === "vip_monthly";
 
+  const selectDeviceMode = (mode: "pc" | "mobile") => {
+    setDeviceMode(mode);
+    toast.info("Vista responsive protegida", {
+      description: "El sitio detecta automáticamente si estás en celular o PC; este selector es solo visual y no cambia la navegación.",
+    });
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#050811]/85 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 min-h-16 py-2 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-3 sm:gap-6 min-w-0">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-extrabold text-slate-950 shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
               TB
@@ -84,9 +95,27 @@ export function Navbar() {
               Acceso VIP
             </Link>
           </nav>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="flex md:hidden h-9 w-9 shrink-0 border border-white/10 text-slate-300 hover:text-white" aria-label="Abrir menú">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-52 bg-slate-950 border-white/15 text-slate-200">
+              <DropdownMenuItem onClick={() => setLocation("/")} className="cursor-pointer"><Layers className="h-4 w-4 mr-2 text-cyan-400" /> Módulos</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLocation("/drive-explorer")} className="cursor-pointer"><FolderSearch className="h-4 w-4 mr-2 text-cyan-400" /> Buscador Drive</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLocation("/pricing")} className="cursor-pointer"><Crown className="h-4 w-4 mr-2 text-amber-400" /> Acceso VIP</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+          <div className="flex items-center text-xs bg-slate-900 border border-white/10 rounded-lg p-0.5" title="Selector visual protegido: la vista se adapta automáticamente">
+            <button aria-label="Vista PC" aria-pressed={deviceMode === "pc"} onClick={() => selectDeviceMode("pc")} className={`h-7 w-7 sm:w-auto sm:px-2 rounded font-semibold transition-colors flex items-center justify-center gap-1 ${deviceMode === "pc" ? "bg-cyan-500 text-slate-950" : "text-slate-400 hover:text-white"}`}><Monitor className="h-3.5 w-3.5" /><span className="hidden sm:inline">PC</span></button>
+            <button aria-label="Vista móvil" aria-pressed={deviceMode === "mobile"} onClick={() => selectDeviceMode("mobile")} className={`h-7 w-7 sm:w-auto sm:px-2 rounded font-semibold transition-colors flex items-center justify-center gap-1 ${deviceMode === "mobile" ? "bg-cyan-500 text-slate-950" : "text-slate-400 hover:text-white"}`}><Smartphone className="h-3.5 w-3.5" /><span className="hidden sm:inline">Móvil</span></button>
+          </div>
+
           <div className="hidden sm:flex items-center text-xs bg-slate-900 border border-white/10 rounded-lg p-0.5">
             <button
               onClick={() => setLang("ES")}
@@ -127,7 +156,7 @@ export function Navbar() {
                     className="border-white/15 bg-white/5 text-white hover:bg-white/10 flex items-center gap-2"
                   >
                     <UserIcon className="h-4 w-4 text-cyan-400" />
-                    <span className="max-w-[100px] truncate">{user?.name || "Mi Cuenta"}</span>
+                    <span className="hidden sm:inline max-w-[100px] truncate">{user?.name || "Mi Cuenta"}</span>
                     <ChevronDown className="h-3 w-3 text-slate-400" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -172,14 +201,14 @@ export function Navbar() {
                 variant="outline"
                 size="sm"
                 onClick={() => setLocation("/login")}
-                className="border-white/20 bg-transparent text-slate-200 hover:text-white hover:bg-white/5"
+                className="border-white/20 bg-transparent text-slate-200 hover:text-white hover:bg-white/5 px-2 sm:px-3"
               >
-                Iniciar Sesión
+                <UserIcon className="h-4 w-4 sm:hidden" /><span className="hidden sm:inline">Iniciar Sesión</span>
               </Button>
               <Button
                 size="sm"
                 onClick={() => setLocation("/pricing")}
-                className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold shadow-md shadow-cyan-500/20"
+                className="hidden sm:inline-flex bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold shadow-md shadow-cyan-500/20"
               >
                 Comprar Acceso
               </Button>
