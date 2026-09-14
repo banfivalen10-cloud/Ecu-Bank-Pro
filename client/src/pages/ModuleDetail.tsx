@@ -44,6 +44,15 @@ const ICON_MAP: Record<string, any> = {
 const DRIVE_ROOT_ID = driveTree.rootId;
 const DRIVE_ROOT_LINK = `https://drive.google.com/drive/folders/${DRIVE_ROOT_ID}`;
 const moduleOneFolders = driveTree.children;
+const moduleTwoFolders = [
+  { id: "curso-winols-01", name: "Módulo 1- Que es winols", children: [] },
+  { id: "curso-winols-02", name: "Módulo 2- Estructura y manejo del software", children: [] },
+  { id: "curso-winols-03", name: "Módulo 3- Creación de un proyecto desde un File Original", children: [] },
+  { id: "curso-winols-04", name: "Módulo 4- Conceptos necesarios para la comprensión, estructuración y modificación de un proyecto", children: [] },
+  { id: "curso-winols-05", name: "Módulo 5- Los mapas y ayuda a su localización, ejes, factores y el Checksum", children: [] },
+  { id: "curso-winols-06", name: "Módulo 6- Conceptos Básicos para realizar una modificación", children: [] },
+  { id: "curso-winols-07", name: "Módulo 7- Material descargable", children: [] },
+];
 
 export default function ModuleDetail() {
   const [, params] = useRoute("/module/:id");
@@ -63,20 +72,22 @@ export default function ModuleDetail() {
   const mod = data?.module;
   const files = data?.files || [];
   const IconComp = mod ? ICON_MAP[mod.icon] || Database : Database;
-  const isDriveIndexedModule = moduleId === "stage-damos";
+  const isDriveIndexedModule = moduleId === "stage-damos" || moduleId === "curso-winols";
+  const indexedFolders = moduleId === "curso-winols" ? moduleTwoFolders : moduleOneFolders;
+  const moduleDriveLink = moduleId === "curso-winols" ? "https://drive.google.com/drive/folders/tunebank-curso-winols" : DRIVE_ROOT_LINK;
 
   const visibleFolders = useMemo(() => {
     const term = folderSearch.trim().toLowerCase();
-    if (!term) return moduleOneFolders;
-    return moduleOneFolders.filter((folder) =>
+    if (!term) return indexedFolders;
+    return indexedFolders.filter((folder) =>
       `${folder.name} ${((folder as any).children ?? []).map((child: any) => child.name).join(" ")}`.toLowerCase().includes(term)
     );
-  }, [folderSearch]);
+  }, [folderSearch, indexedFolders]);
 
-  const selectedFolder = moduleOneFolders.find((folder) => folder.id === folderId);
+  const selectedFolder = indexedFolders.find((folder) => folder.id === folderId);
 
   const handleOpenDrive = () => {
-    window.open(DRIVE_ROOT_LINK, "_blank", "noopener,noreferrer");
+    window.open(moduleDriveLink, "_blank", "noopener,noreferrer");
   };
 
   const handleDownload = (fileName: string) => {
@@ -154,11 +165,11 @@ export default function ModuleDetail() {
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div>
                   <p className="text-sm text-slate-200 leading-relaxed">
-                    Biblioteca indexada desde la carpeta real de Google Drive. Navega por las carpetas o busca cualquier archivo por nombre (marca, modelo, ECU...).
+                    {moduleId === "curso-winols" ? "Curso completo grabado en español latino. Navega por los módulos, descarga los materiales o ábrelos directamente en Drive." : "Biblioteca indexada desde la carpeta real de Google Drive. Navega por las carpetas o busca cualquier archivo por nombre (marca, modelo, ECU...)."}
                   </p>
                   <div className="flex items-center gap-2 mt-2 text-xs text-emerald-300">
                     <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                    Estructura verificada en la última auditoría de Google Drive
+                    {moduleId === "curso-winols" ? "Estructura del curso preparada para vincular con Google Drive" : "Estructura verificada en la última auditoría de Google Drive"}
                   </div>
                 </div>
                   <Button onClick={handleOpenDrive} className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold shrink-0">
@@ -241,7 +252,7 @@ export default function ModuleDetail() {
                   )}
                   <div className="flex flex-wrap justify-center gap-2 mt-4">
                     <Button onClick={() => setLocation(`/drive-explorer?module=${moduleId}`)} variant="outline" className="border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10">Abrir explorador de archivos</Button>
-                    <Button onClick={() => window.open(`https://drive.google.com/drive/folders/${selectedFolder.id}`, "_blank", "noopener,noreferrer")} variant="ghost" className="text-slate-300 hover:text-white">Abrir carpeta real</Button>
+                    <Button onClick={() => window.open(moduleId === "curso-winols" ? moduleDriveLink : `https://drive.google.com/drive/folders/${selectedFolder.id}`, "_blank", "noopener,noreferrer")} variant="ghost" className="text-slate-300 hover:text-white">Abrir carpeta real</Button>
                   </div>
                 </div>
               </div>
