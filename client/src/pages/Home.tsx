@@ -143,14 +143,7 @@ export default function Home() {
 
         </div>
 
-        {isLoading && !modules ? (
-          <div className="space-y-4">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-28 rounded-2xl bg-white/5 animate-pulse" />
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-4">
+        <div className="space-y-4">
             {visibleModules.map((item) => {
               const IconComp = ICON_MAP[item.icon] || Database;
               let tagsArray: string[] = [];
@@ -217,8 +210,7 @@ export default function Home() {
                 </div>
               );
             })}
-          </div>
-        )}
+        </div>
         <div onClick={() => setLocation("/module/bonus")} className="mt-4 glow-card group cursor-pointer p-6 rounded-2xl flex items-center justify-between gap-6 border border-fuchsia-500/20 bg-fuchsia-950/10">
           <div><div className="text-[11px] font-bold tracking-widest text-fuchsia-300 uppercase">BONUS</div><h3 className="text-lg font-bold text-white mt-1">Bonus / Próximamente</h3><p className="text-xs text-slate-400 mt-1">Acceso con contraseña · nuevos recursos en preparación</p></div><div className="text-fuchsia-300 text-xs font-bold">Ver contenido <ArrowRight className="inline h-4 w-4 ml-1" /></div>
         </div>
