@@ -202,7 +202,6 @@ export default function Home() {
 
                   <div className="flex md:flex-col items-center md:items-end justify-between md:justify-center gap-3 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-white/5">
                     <div className="flex md:flex-col items-center md:items-end gap-1 text-cyan-400 text-xs font-bold group-hover:translate-x-1 transition-transform">
-                      <span className="text-slate-300">Autos</span>
                       <span>Ver contenido</span>
                       <ArrowRight className="h-4 w-4" />
                     </div>
